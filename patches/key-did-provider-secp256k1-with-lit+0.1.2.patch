@@ -1,14 +1,21 @@
 diff --git a/node_modules/key-did-provider-secp256k1-with-lit/dist/index.js b/node_modules/key-did-provider-secp256k1-with-lit/dist/index.js
-index 1bb92d0..9ce3f18 100644
+index 1bb92d0..e8a0976 100644
 --- a/node_modules/key-did-provider-secp256k1-with-lit/dist/index.js
 +++ b/node_modules/key-did-provider-secp256k1-with-lit/dist/index.js
-@@ -7,15 +7,17 @@ import { toGeneralJWS, toJose, toStableObject, sha256, log } from "./util.js";
+@@ -7,15 +7,24 @@ import { toGeneralJWS, toJose, toStableObject, sha256, log } from "./util.js";
  const ec = new elliptic.ec("secp256k1");
  export const litActionSignAndGetSignature = async (sha256Payload, context) => {
      log("[litActionSignAndGetSignature] sha256Payload: ", sha256Payload);
 -    const authSig = await LitJsSdk.checkAndSignAuthMessage({ chain: "ethereum" });
 +    log("mubmai");
-+    const authSig = await LitJsSdk.checkAndSignAuthMessage({ chain: "mumbai" });
++    //const authSig = await LitJsSdk.checkAndSignAuthMessage({ chain: "mumbai" });
++    const authSig = {
++        "sig":"0x4e97bc3c2ab08fe7e6beef7828ecb7bebbd569be31e65ce982792c501a9da1952a1449c3666ba0222081a08819e39cde57a26f5086c6a5026f849bb6d896087d1c",
++        "derivedVia":"web3.eth.personal.sign",
++        "signedMessage":"vercel-test-npm.vercel.app wants you to sign in with your Ethereum account:\n0xa46574434328a8594851b5267EC0a4e6aB14316f\n\n\nURI: https://vercel-test-npm.vercel.app/action?pkpPublicKey=04df98f62aae4be61145a236b9ba0294292045b8ed87c6946627399de0ef83865cbefc30ce4a380775647a2601df6ab0b1b75a43951185253a1053826e240bb4b7&lockAddress=0x9cb8cbebc75256d05517bcef66bba2cc68eac7fb&ipfsId=Qma1H5pY89PooSJeoQAmADxP55scevbt9j3zucFrrzzQJb\nVersion: 1\nChain ID: 80001\nNonce: WZuKGmFSE1W0ifdpe\nIssued At: 2022-12-29T13:05:51.452Z\nExpiration Time: 2023-01-05T13:05:43.158Z",
++        "address":"0xa46574434328a8594851b5267EC0a4e6aB14316f"
++    };
++
      log("[litActionSignAndGetSignature] authSig:", authSig);
      const litNodeClient = new LitJsSdk.LitNodeClient({ litNetwork: "serrano" });
      await litNodeClient.connect();
@@ -22,7 +29,7 @@ index 1bb92d0..9ce3f18 100644
      };
      log("[litActionSignAndGetSignature] jsParams:", jsParams);
      const executeOptions = {
-@@ -27,6 +29,9 @@ export const litActionSignAndGetSignature = async (sha256Payload, context) => {
+@@ -27,6 +36,9 @@ export const litActionSignAndGetSignature = async (sha256Payload, context) => {
      const res = await litNodeClient.executeJs(executeOptions);
      log("[litActionSignAndGetSignature] res.signatures:", res.signatures);
      const signature = res.signatures;

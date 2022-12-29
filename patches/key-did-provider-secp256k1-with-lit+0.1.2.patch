@@ -1,0 +1,34 @@
+diff --git a/node_modules/key-did-provider-secp256k1-with-lit/dist/index.js b/node_modules/key-did-provider-secp256k1-with-lit/dist/index.js
+index 1bb92d0..9ce3f18 100644
+--- a/node_modules/key-did-provider-secp256k1-with-lit/dist/index.js
++++ b/node_modules/key-did-provider-secp256k1-with-lit/dist/index.js
+@@ -7,15 +7,17 @@ import { toGeneralJWS, toJose, toStableObject, sha256, log } from "./util.js";
+ const ec = new elliptic.ec("secp256k1");
+ export const litActionSignAndGetSignature = async (sha256Payload, context) => {
+     log("[litActionSignAndGetSignature] sha256Payload: ", sha256Payload);
+-    const authSig = await LitJsSdk.checkAndSignAuthMessage({ chain: "ethereum" });
++    log("mubmai");
++    const authSig = await LitJsSdk.checkAndSignAuthMessage({ chain: "mumbai" });
+     log("[litActionSignAndGetSignature] authSig:", authSig);
+     const litNodeClient = new LitJsSdk.LitNodeClient({ litNetwork: "serrano" });
+     await litNodeClient.connect();
+     log("[litActionSignAndGetSignature] ipfsId:", context.ipfsId);
+     const jsParams = {
+         toSign: Array.from(sha256Payload),
+-        keyId: getPubKeyFromEncodedDID(context.did),
++        publicKey: getPubKeyFromEncodedDID(context.did),
+         sigName: "sig1",
++        authSig,
+     };
+     log("[litActionSignAndGetSignature] jsParams:", jsParams);
+     const executeOptions = {
+@@ -27,6 +29,9 @@ export const litActionSignAndGetSignature = async (sha256Payload, context) => {
+     const res = await litNodeClient.executeJs(executeOptions);
+     log("[litActionSignAndGetSignature] res.signatures:", res.signatures);
+     const signature = res.signatures;
++    if (typeof signature === 'object' && Object.keys(signature).length === 0) {
++        throw Error('Unauthorized to sign');
++    }
+     return {
+         r: signature.sig1.r,
+         s: signature.sig1.s,
